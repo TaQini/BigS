@@ -9,135 +9,136 @@
 #include "node.hpp"
 using namespace std;
 
-// CLASS SNAKE
-class Snake{
-private:
-	Node *head;
-	Node *tail;
-	int length;
-public:
-	Snake(int n);
-	void Insert(Node *head, Node *p);
-	// void Delete(int n); In ver.2: Eat special bean then cut down the length of snake	
-	void Move(/*DIR?*/);
-	int CheckPos(int x, int y);
-	Node* GetHead(){ return head;}
-	Node* GetTail(){ return tail;}
-	void Show(){
-		Node *p = new(Node);
-		p = head;
-		while(p){
-			cout << p->GetX() << "," << p->GetY() << endl;
-			p = p->GetFD();
-		}
+void Control::ReSizeGLScene(int w, int h) {  
+	if (h == 0) // Prevent A Divide By Zero If The Window Is Too Small  
+		h = 1;
+	glViewport(0, 0, w, h); // Reset The Current Viewport And Perspective Transformation  
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	gluOrtho2D(0.0f, (GLdouble)w, 0.0f, (GLdouble)h);  
+}
+Control::Control(int d){
+	ChangeDir(d); 
+	TIMER = TIME_BASE;
+	OVER = 0;
+	PAUSE = 0;
+}
+
+// void Control::OnKeyPressed(int key, int x, int y){
+//     switch(key){
+//     	case KEY_SPACE:
+//     		PAUSE = !PAUSE;
+//     		if(!PAUSE)
+// 	            glutTimerFunc(TIMER, OnTimer, OVER);
+//     		break;
+//     	case KEY_ESCAPE:
+// 			glutDestroyWindow(window);
+// 			exit(0);
+// 		default:
+// 			break;
+//     }
+// }
+// void Control::OnDirection(int key, int x, int y){
+// 	if (PAUSE) return;
+// 	switch(key){
+// 		case GLUT_KEY_UP:
+// 			if(MOVE != DIR_DOWN) 
+// 				DIR = DIR_UP;
+// 			break;
+// 		case GLUT_KEY_DOWN:
+// 			if(MOVE != DIR_UP)
+// 				DIR = DIR_DOWN;
+// 			break;
+// 		case GLUT_KEY_LEFT:
+// 			if(MOVE != DIR_RIGHT)
+// 				DIR = DIR_LEFT;
+// 			break;
+// 		case GLUT_KEY_RIGHT:
+// 			if(MOVE != DIR_LEFT)
+// 				DIR = DIR_RIGHT;
+// 			break;
+// 		default:
+// 			break;
+// 	}
+// }
+int Control::MoveX(){
+	switch (DIR){
+		case 0:
+			return -1;
+		case 1:
+			return 1;
+		default:
+			return 0;
 	}
-};
-
-int Snake::CheckPos(int x, int y){
-	Node* p = new(Node);
-	for(p = head->GetFD(); p->GetX() != -1; p = p->GetFD()){
-		if( p->GetX() == x && p->GetY() == y ) return 0;
+}
+int Control::MoveY(){
+	switch (DIR){
+		case 2:
+			return -1;
+		case 3:
+			return 1;
+		default:
+			return 0;
 	}
-	return 1;
+}
+void Control::Move(Snake &S){
+	Node *p = new(Node);
+	p->SetPosition(S.GetHead()->GetFD()->GetX()+MoveX(),S.GetHead()->GetFD()->GetY()+MoveY());
+	// p->SetColor(WHITE);
+	S.Insert(S.GetHead(),p);
+	S.Delete();
 }
 
-Snake::Snake(int n){
-	length = n;
-	head = new(Node);
-	tail = new(Node);
-	head->SetPosition(MAP_WIDHT/2,MAP_HEIGHT/2);
-	head->SetColor(WHITE);
-	head->SetFD(tail);
-	head->SetBK(NULL);
-	tail->SetFD(NULL);
-	tail->SetBK(head);
-	for (int i=length-1; i>=0; --i){
-		Node *node = new(Node);
-		node->SetPosition(head->GetX(),head->GetY()-i);
-		Insert(head,node);
-	}
-	head->SetPosition(0,-1);
-	tail->SetPosition(-1,0);
-	/* Init snake
-	[H] 0,-1
-	 => 8,8
-		8,7
-		8,6
-		8,5
-		8,4
-	[T] -1,0
-	 */
-}
-
-void Snake::Insert(Node *head, Node *p){
-    p->SetBK(head);
-    p->SetFD(head->GetFD());
-    head->SetFD(p);
-    p->GetFD()->SetBK(p);
-}
-
-
-class Food : public POS, public RGB{
-// private:
-	// int seed;
-public:
-	void RandomPlace(Snake &S);
-	Food(){	}
-	int RandInt(int sz);
-};
-
-int Food::RandInt(int sz){
-	char buf[4];
-	int fd = open("/dev/urandom",O_RDONLY,0); 
-	read(fd,buf,4);
-	close(fd);
-	return *(unsigned int*)buf % sz;
-}
-
-void Food::RandomPlace(Snake &S){
-    do{
-		SetPosition( RandInt(MAP_WIDHT),RandInt(MAP_HEIGHT));
-    }while (!S.CheckPos(GetX(),GetY()));
-    cout << GetX() << "," << GetY() << endl;
-}
-
-// CLASS DIR
-class Control{
-private:
-	int DIR;
-	int MOVE;
-	// int _dir_x[4] = {-1, 1, 0, 0};
-	// int _dir_y[4] = { 0, 0,-1, 1};  
-	int TIMER;
-	int OVER;  
-	int PAUSE;  
-
-public:
-	Control(int d){ 
-		ChangeDir(d); 
-		TIMER = TIME_BASE;
-		OVER = 0;
-		PAUSE = 0;
-	}
-	void ChangeDir(int d){ DIR = d;}
-	int GetDir(){ return DIR;}
-	void SpeedUp();
-
-};
 void Control::SpeedUp(){
 	if (TIMER >= TIME_MIN){
 		TIMER += TIME_UPUNIT;
 	}
 }
+int Control::GameOver(Snake &S){
+	Node* p = new(Node);
+	for(p = S.GetHead()->GetFD(); p->GetX() != -1; p=p->GetFD()){
+		if( p->GetX() == S.GetHead()->GetFD()->GetX() + GetDir()
+			&& p->GetY() == S.GetHead()->GetFD()->GetY() + GetDir()){
+            glutSetWindowTitle("  FINISHED !!");  
+        	return 1;
+		}
+	}
+	return 0;
+}
 
 int main(int argc, char **argv){
+	Control CTRL(DIR_RIGHT);
 	Snake BigS(INIT_LENGTH);
-	BigS.Show();
-	cout << "2333" << endl;
 	Food Beans;
-	Beans.RandomPlace(BigS);
-	Control Direction(DIR_RIGHT);
+	BigS.Show();
+	// cout << CTRL.GetDir() << endl;
+	cout << endl;
+	CTRL.Move(BigS);
+	// cout << CTRL.MoveX() << "," << CTRL.MoveY() << endl;
+	// cout << "2333" << endl;
+	// Beans.RandomPlace(BigS);
+	// Beans.EatenBy(BigS);
+	// BigS.Delete();
+	// BigS.Delete();
+	// BigS.Delete();
+	// BigS.Delete();
 
+	BigS.Show();
+	// glutInit(&argc, argv);    
+	// glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);    
+	// glutInitWindowSize(500, 500);    
+	// glutInitWindowPosition(0, 0);    
+	// glutCreateWindow("<>>>>><><><><><><><><<<<<<<<>>>>>>>>>>>>>>>>><<<<");    
+	// glutDisplayFunc(& CTRL.DrawGLScene);    
+	// glutIdleFunc(& CTRL.DrawGLScene);   
+	// glutReshapeFunc(& CTRL.ReSizeGLScene);  
+	// glutKeyboardFunc(& CTRL.keyPressed);  
+	// glutSpecialFunc(CTRL.OnDirection);  
+	// glutTimerFunc(CTRL.TIMER, CTRL.OnTimer, CTRL.OVER);  
+	// InitGL(500, 500);  
+	// glutMainLoop();    
 	// CheckPos(BigS);
 	// Beans.RandomPlace();
 	// BigS.Initilize(5);

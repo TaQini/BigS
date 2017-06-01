@@ -1,4 +1,6 @@
 // GAME
+#define KEY_ESCAPE		0x1B
+#define KEY_SPACE		0x20
 #define MAP_WIDHT  	16
 #define MAP_HEIGHT 	16
 
