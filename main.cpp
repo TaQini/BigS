@@ -27,7 +27,7 @@ void OnTimer(int value){
 				Beans->EatenBy(*BigS);
 				CTRL->AddSCORE(*BigS, *Beans);
 				// BigS->Show();
-				cout << "ok!! GOT 1 point!" << endl << endl;
+				// cout << "ok!! GOT 1 point!" << endl << endl;
 				Beans->RandomPlace(*BigS);
 			}
 			else
@@ -36,12 +36,13 @@ void OnTimer(int value){
 		else{
 			if(CTRL->GetLIFE() <= 0){
 				char buf[100];
-				sprintf(buf, "  GAME OVER !!  Final SCORE: %d", CTRL->GetSCORE());
+				sprintf(buf, "GAME OVER !!  Final SCORE: %d", CTRL->GetSCORE());
 				glutSetWindowTitle(buf);  
-
+				cout << buf << endl;
 				// But you can also play it :)			
-				sleep(5);
-				glutSetWindowTitle("  BYE BYE !!  ");
+				sleep(3);
+				glutSetWindowTitle("BYE BYE !!");
+				cout << "BYE BYE !!" << endl;
 				sleep(1);
 				exit(0);
 			}
@@ -62,13 +63,13 @@ void Display(){
 }
 
 void OnKeyPressed(unsigned char key, int x, int y){
-	cout << "[Debug] key: " << (int)(key) << endl;
+	// cout << "[Debug] key: " << (int)(key) << endl;
     switch(key){
     	case KEY_SPACE:
     		CTRL->ChangePAUSE();
     		// Hidden function : Once Press PAUSE, speed *= 2
-    		if(!CTRL->GetPAUSE())
-			    glutTimerFunc(CTRL->GetTIMER(), OnTimer, 1);
+    		// if(!CTRL->GetPAUSE())
+			    // glutTimerFunc(CTRL->GetTIMER(), OnTimer, 1);
     		break;
     	case KEY_ESCAPE:
 			exit(0);
@@ -102,11 +103,29 @@ void OnDirection(int key, int x, int y){
 	}
 }
 
+void welcome(void){
+	system("clear");
+
+	cout << "    Welcome to TaQini's Game \n        -- Snake Eat Beans !" << endl;
+	cout << endl;
+	cout << "You will control a snake to eat Beans." << endl;
+	cout << endl;
+	cout << "* Blue and Red Beans have some special function :)" << endl;
+	cout << endl;
+	cout << "When your score is up to 1000, You WIN the Game!" << endl;
+	cout << endl << endl;
+	cout << "This window will show some info 4 u~" << endl;
+	cout << endl;
+	cout << "Good Luck!" << endl;
+	cout << endl;
+	cout << "Press \"SPACE\" to START !!" << endl;
+	cout << endl;
+}
 int main(int argc, char ** argv) {
 	CTRL = new Control(DIR_RIGHT);
 	BigS = new Snake(4);
 	Beans = new Food;
-	BigS->Show();
+	// BigS->Show();
 	Beans->RandomPlace(*BigS);
 
 	glutInit(&argc, argv);
@@ -116,7 +135,7 @@ int main(int argc, char ** argv) {
 	glutInitWindowSize(500, 500);
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow("TaQini\'s Snake");// Title
-	
+	welcome();	
 	// Draw and Display
 	glutReshapeFunc(Reshape);
 	glutDisplayFunc(Display);

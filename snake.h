@@ -68,7 +68,7 @@ void Snake::Insert(Node *p){
     head->SetFD(p);
     p->GetFD()->SetBK(p);
     length += 1;
-    head->GetFD()->SetColor(GREY);
+    head->GetFD()->SetColor(DARK_GREEN);
     head->GetFD()->GetFD()->SetColor(GREEN);
 }
 

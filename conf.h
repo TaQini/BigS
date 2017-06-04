@@ -27,6 +27,6 @@
 #define RED		1.0f,0.0f,0.0f
 #define ORANGE	1.0f,0.5f,0.0f
 
-#define GREEN	0.0f,1.0f,0.0f
-#define GREY	0.5f,0.5f,0.5f
-
+#define GREEN		0.0f,1.0f,0.0f
+#define DARK_GREEN	0.0f,0.5f,0.0f
+#define DARK_GREY	0.2f,0.2f,0.2f

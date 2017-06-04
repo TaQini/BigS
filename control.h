@@ -37,7 +37,7 @@ public:
 Control::Control(int d){
 	ChangeDIR(d); 
 	TIMER = TIME_BASE;
-	PAUSE = 0;
+	PAUSE = 1;
 	LIFE = INIT_LIFE;
 	SCORE = 0;
 	START_TIME = time(NULL);
@@ -73,10 +73,10 @@ int Control::HasFood(Snake &S, Food &F){
 	Node *p = new(Node);
 	p = S.GetHead()->GetFD();
 
-    cout << "Dir: " << MoveX() << "," << MoveY() << endl;
-    cout << "Next: " << p->GetX()+MoveX() << "," << p->GetY()+MoveY() << endl << endl;
-    cout << "Head: " << p->GetX() << "," << p->GetY() << endl;
-    cout << "Food: " << F.GetX() << "," << F.GetY() << endl << endl;
+    // cout << "Dir: " << MoveX() << "," << MoveY() << endl;
+    // cout << "Next: " << p->GetX()+MoveX() << "," << p->GetY()+MoveY() << endl << endl;
+    // cout << "Head: " << p->GetX() << "," << p->GetY() << endl;
+    // cout << "Food: " << F.GetX() << "," << F.GetY() << endl << endl;
     
     if(p->GetX() + MoveX() == F.GetX()
         && p->GetY() + MoveY() == F.GetY() ){
@@ -87,25 +87,34 @@ int Control::HasFood(Snake &S, Food &F){
 }
 void Control::SpeedUp(){
 	int tmp = TIMER;
-	if (TIMER >= TIME_MIN && SCORE < 30){
-		TIMER = TIME_BASE - TIME_UPUNIT*(SCORE / 3);
+	if (TIMER >= TIME_MIN && SCORE < 60){
+		TIMER = TIME_BASE - TIME_UPUNIT*(SCORE / 10);
 	}
 	if (TIMER != tmp){
-		glutSetWindowTitle("  SPEED UP !!  ");
+		glutSetWindowTitle("SPEED UP !!");
+		cout << "SPEED UP !!"<< endl;
 		tmp = TIMER;
 	}
-	if (SCORE == 30){
-		glutSetWindowTitle("  MAX SPEED !!  ");
+	if (SCORE == 60){
+		glutSetWindowTitle("MAX SPEED !!");
+		SCORE += 5;
+		LIFE += 3;
+		cout << "MAX SPEED !!" << endl;
+		cout << "Score +5  Life +3" << endl;
 		TIMER = 100;
 	}
-	if (SCORE > 30){
+	if (SCORE > 60){
 		TIMER = 100;
 	}
-	if (SCORE == 50){
-		glutSetWindowTitle("  CRAZY MODE !!  ");
+	if (SCORE == 120){
+		glutSetWindowTitle("CRAZY MODE !!");
+		SCORE += 10;
+		LIFE += 5;
+		cout << "CRAZY MODE !!" << endl;
+		cout << "Score +10  Life +5" << endl;
 		TIMER = 75;
 	}
-	if (SCORE > 50){
+	if (SCORE > 120){
 		TIMER = 75;
 	}
 }
@@ -117,8 +126,9 @@ int Control::LostLife(Snake &S){
 			&& p->GetY() == S.GetHead()->GetFD()->GetY() + MoveY()){
 			char buf[100];
         	SubLife(1);
-			sprintf(buf, " You crash yourself :)  -1s  Life: %d", LIFE);
+			sprintf(buf, "You crash yourself :)  -1s  Life: %d", LIFE);
 			glutSetWindowTitle(buf);  
+			cout << buf << endl;
 
         	if (LIFE > 0) return 0; // can pass yourself :)
         	else return 1; // if life <= 0 , can't pass 
@@ -128,18 +138,20 @@ int Control::LostLife(Snake &S){
 			|| S.GetHead()->GetFD()->GetX() + MoveX() == MAP_WIDHT || S.GetHead()->GetFD()->GetY() + MoveY() == MAP_HEIGHT){
 			char buf[100];
 			SubLife(1); 
-			sprintf(buf, " Crash The Wall :)  -1s  Life: %d", LIFE);
+			sprintf(buf, "Crash The Wall :)  -1s  Life: %d", LIFE);
 			glutSetWindowTitle(buf);  
+			cout << buf << endl;
         	// cout << "Wall!!" << endl;
         	return 1; // Can't move it crash wall
 		}
 		else{
 			char buf[100];
-			sprintf(buf," Life: %d   Score: %d", LIFE, SCORE);
+			sprintf(buf,"Life: %d   Score: %d", LIFE, SCORE);
 			glutSetWindowTitle(buf);
+			// cout << buf << endl;
 		}
 	}
-	cout << "continue" << endl;
+	// cout << "continue" << endl;
 	return 0;
 }
 
@@ -156,19 +168,19 @@ void Control::Reshape(int w, int h) {
 }
 
 void Control::Display(Snake &S, Food &F){
-	glClearColor(BLACK, 1.0);
+	glClearColor(DARK_GREY, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear The Screen And The Depth Buffer  
 	
 	glLoadIdentity(); // Reset The View
 	glTranslatef(-1.0f, 1.0f, 0.0f);
 
-	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-
-	glBegin(GL_QUADS);
-    glColor3f(WHITE);
 	double unit_x = 2.0f/MAP_WIDHT;
 	double unit_y = 2.0f/MAP_HEIGHT;
-    for (int i = 0; i < MAP_HEIGHT; ++i){
+//unit
+/*  glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+	glBegin(GL_QUADS);
+    glColor3f(WHITE);
+	for (int i = 0; i < MAP_HEIGHT; ++i){
     	// draw unit
         for (int j = 0; j < MAP_WIDHT; ++j){
             glVertex3f((j+0) * unit_x, -(i+0) * unit_y, 0.0f);
@@ -177,7 +189,7 @@ void Control::Display(Snake &S, Food &F){
             glVertex3f((j+0) * unit_x, -(i+1) * unit_y, 0.0f);
         }
     }
-	glEnd();
+	glEnd(); */	
 	// Food
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);  
 	glBegin(GL_QUADS);
@@ -195,7 +207,6 @@ void Control::Display(Snake &S, Food &F){
 	while (p->GetY() != -1){
 		glBegin(GL_QUADS);
 		glColor3f(p->GetR(), p->GetG(), p->GetB());
-		// glColor3f(GREEN);
         glVertex3f((p->GetY()  ) * unit_x, -(p->GetX()  ) * unit_y, 0.0f);  
         glVertex3f((p->GetY()+1) * unit_x, -(p->GetX()  ) * unit_y, 0.0f);  
         glVertex3f((p->GetY()+1) * unit_x, -(p->GetX()+1) * unit_y, 0.0f);  
@@ -203,22 +214,27 @@ void Control::Display(Snake &S, Food &F){
 		glEnd();
 		p = p->GetBK();
 	}
-	// 
 	glutSwapBuffers();
 }
 
 void Control::AddSCORE(Snake &S, Food &F){
 	if (F.CmpColor(YELLOW)){
 		SCORE += 1;
+		cout << "[Y] Score +1  ";
 	}
 	else if(F.CmpColor(BLUE)){
+		S.Delete();
 		int p = F.RandInt(100);
-		if (p & 1) S.Delete();
 		SCORE += 3;
-		LIFE += 1;
+		cout << "[B] Score +3 " << endl;
 		if(S.GetLength() > 2){
 			S.Delete();
-			S.Delete();
+			cout << "Length -1" << endl;
+			if (p & 1) {
+				S.Delete();
+				LIFE += 1;
+				cout << "[!] Life +1, Length -1" << endl;
+			}
 		}
 		else{
 			LIFE += 2;
@@ -228,28 +244,36 @@ void Control::AddSCORE(Snake &S, Food &F){
 		S.Delete();
 		int p = F.RandInt(100);
 		if( p < 30){
-			SCORE += 10;
+			LIFE += 3;
+			SCORE += 5;
+			cout << "[R] Score +5, Life +3 " << endl;
 		}
 		else if( p < 70){
 			LIFE += 10;
+			cout << "[R] Life +10 " << endl;
 		}
 		else{
 			if(S.GetLength() > p%10+1){
 				for(int i=0; i<p%10+1; i++){
 					S.Delete();
 				}
+			cout << "[R] Length -" << p%10+1 << " " << endl;
 			}
 			else{
 				LIFE += 5;
 				SCORE += 5;
+				cout << "Length is too small! Score +5, Life +5" << endl;
 			}
 		}
 	}
 	else if(F.CmpColor(ORANGE)){
-		SCORE += 50;
 		for(int i=S.GetLength(); i > 2; i--){
 			S.Delete();
 		}
+		LIFE += 10;
+		cout << "[*] Length will be Back to 2 " << endl;
+		cout << "[*] Life +10! " << endl;
 	}
+	cout << "Life: " << LIFE << "  Score: " << SCORE << endl << endl;		
 }
 #endif
