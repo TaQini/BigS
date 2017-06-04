@@ -18,6 +18,9 @@ private:
 	float R,G,B;
 public:
 	void SetColor(float r, float g, float b){ R = r; G = g; B = b;}
+	float GetR() { return R;}
+	float GetG() { return G;}
+	float GetB() { return B;}
 	RGB GetColor() {return *this;}
 };
 

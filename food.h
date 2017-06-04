@@ -4,13 +4,15 @@
 class Food : public POS, public RGB{
 public:
 	void RandomPlace(Snake &S);
-	Food(){	}
+	Food();
 	void EatenBy(Snake &S);
 	int RandInt(int sz);
 	int CheckPos(int x, int y);
-	void Draw();
 };
 
+Food::Food(){
+	SetColor(YELLOW);
+}
 int Food::CheckPos(int x, int y){
 	if(GetX() == x && GetY() == y){
 		return 0;
@@ -20,7 +22,7 @@ int Food::CheckPos(int x, int y){
 
 void Food::EatenBy(Snake &S){
 	Node* p = new Node(GetX(),GetY());
-	p->SetColor(YELLOW);
+	p->SetColor(GetR(),GetG(),GetB());
 	S.Insert(p);
 	// cout << S.GetLength() << endl;
 }
@@ -39,4 +41,5 @@ void Food::RandomPlace(Snake &S){
     }while (!S.CheckPos(GetX(),GetY()));
     // cout << GetX() << "," << GetY() << endl;
 }
+
 #endif

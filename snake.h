@@ -21,11 +21,9 @@ public:
 		p = head;
 		while(p){
 			cout << p->GetX() << "," << p->GetY() << endl;
-			// sleep(1);
 			p = p->GetFD();
 		} 
-	} 
-	void Draw();
+	}
 };
 // CLASS SNAKE
 int Snake::CheckPos(int x, int y){
@@ -41,14 +39,13 @@ Snake::Snake(int n){
 	head = new(Node);
 	tail = new(Node);
 	head->SetPosition(MAP_WIDHT/2,MAP_HEIGHT/2);
-	head->SetColor(WHITE);
 	head->SetFD(tail);
 	head->SetBK(NULL);
 	tail->SetFD(NULL);
 	tail->SetBK(head);
 	for (int i=n-1; i>=0; --i){
 		Node *p = new(Node);
-		p->SetPosition(head->GetX(),head->GetY()-i);
+		p->SetPosition(head->GetX(),head->GetY()-i); // initilize a snake
 		Insert(p);
 	}
 	head->SetPosition(0,-1);
@@ -71,7 +68,10 @@ void Snake::Insert(Node *p){
     head->SetFD(p);
     p->GetFD()->SetBK(p);
     length += 1;
+    head->GetFD()->SetColor(GREY);
+    head->GetFD()->GetFD()->SetColor(GREEN);
 }
+
 void Snake::Delete(){
 	// Delete p before tail
 	Node* p = tail->GetBK();

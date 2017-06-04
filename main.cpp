@@ -1,9 +1,10 @@
 #include <iostream>
 using namespace std;
-#include <GL/glut.h>    // Header File For The GLUT Library   
-#include <GL/gl.h>    // Header File For The OpenGL32 Library  
-#include <GL/glu.h>   // Header File For The GLu32 Library  
-#include <unistd.h>     // Header file for sleeping.  
+#include <GL/glut.h>
+#include <GL/gl.h>  
+#include <GL/glu.h>  
+#include <unistd.h>  
+#include <stdio.h>
 #include <fcntl.h>
 #include "conf.h"
 #include "node.h"
@@ -20,32 +21,38 @@ void OnTimer(int value){
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	if(!CTRL->GetPAUSE()){
-		if(CTRL->HasFood(*BigS, *Beans)){
-			
-			Beans->EatenBy(*BigS);
-			BigS->Show();
-			cout << "ok!! GOT 1 point!" << endl << endl;
-			Beans->RandomPlace(*BigS);
-		}
-		if(!CTRL->GameOver(*BigS)){
-			CTRL->SnakeMove(*BigS); 
-			sleep(1);
+		if(!CTRL->LostLife(*BigS)){
+			if(CTRL->HasFood(*BigS, *Beans)){
+				Beans->EatenBy(*BigS);
+				CTRL->AddSCORE(1);
+				// BigS->Show();
+				cout << "ok!! GOT 1 point!" << endl << endl;
+				Beans->RandomPlace(*BigS);
+			}
+			else
+				CTRL->SnakeMove(*BigS); 
 		}
 		else{
-			CTRL->SetOVER(1);
+			if(CTRL->GetLIFE() <= 0){
+				glutSetWindowTitle("  GAME OVER !!  ");
+				// But you can also play it :)			
+				// glutSetWindowTitle("  GAME OVER !!  ");
+				// sleep(1);
+				// glutSetWindowTitle("  BYE BYE !!  ");
+				// sleep(1);
+				// exit(0);
+			}
 		}
-
 	}
-
 	glutSwapBuffers();
-	glutTimerFunc(500, OnTimer, 1);//需要在函数中再调用一次，才能保证循环  
+	glutTimerFunc(CTRL->GetTIMER(), OnTimer, 1);
 }
 
 void Reshape(int x, int y){
 	CTRL->Reshape(x, y);
 }
 void Display(){
-	CTRL->Display();
+	CTRL->Display(*BigS, *Beans);
 }
 
 void OnKeyPressed(unsigned char key, int x, int y){
@@ -53,8 +60,9 @@ void OnKeyPressed(unsigned char key, int x, int y){
     switch(key){
     	case KEY_SPACE:
     		CTRL->ChangePAUSE();
+    		// Hidden function : Once Press PAUSE, speed *= 2
     		if(!CTRL->GetPAUSE())
-	            glutTimerFunc(CTRL->GetTIMER(), OnTimer, CTRL->GetOVER());
+	            CTRL->SpeedUp();
     		break;
     	case KEY_ESCAPE:
 			exit(0);
@@ -96,16 +104,18 @@ int main(int argc, char ** argv) {
 	Beans->RandomPlace(*BigS);
 
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGBA);
+	// glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);    
+
+	// glutInitDisplayMode(GLUT_RGBA);
 	glutInitWindowSize(500, 500);
 	glutInitWindowPosition(100, 100);
-	glutCreateWindow("TaQini\'s Snake");//窗口标题
+	glutCreateWindow("TaQini\'s Snake");// Title
 	
 	// Draw and Display
-	glutReshapeFunc(Reshape);//窗口大小发生改变时采取的行为
-	glutDisplayFunc(Display);//显示绘制图形
+	glutReshapeFunc(Reshape);
+	glutDisplayFunc(Display);
 	glutIdleFunc(Display);
-    glutTimerFunc(CTRL->GetTIMER(), OnTimer, CTRL->GetOVER());	
+    glutTimerFunc(CTRL->GetTIMER(), OnTimer, 1);	
 	glutKeyboardFunc(OnKeyPressed);
 	glutSpecialFunc(OnDirection);
 

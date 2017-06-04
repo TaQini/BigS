@@ -5,16 +5,15 @@ private:
 	int DIR;
 	int MOVE;
 	int TIMER;
-	int OVER;
 	int PAUSE;
+	int CRASH_TIME;
+	int LIFE;
+	int SCORE;
 public:
 	Control(int d);
-
 	int GetDIR(){ return DIR;}
 	int GetMOVE(){ return MOVE;}
 	int GetTIMER(){ return TIMER;}
-	int GetOVER(){ return OVER;}
-	void SetOVER(int o){ OVER = o;}
 	int GetPAUSE(){ return PAUSE;}
 
 	void ChangeDIR(int d){ DIR = d;}
@@ -23,36 +22,39 @@ public:
 	int MoveY();
 	void SnakeEat(Snake &S, Food &F);
 	void SnakeMove(Snake &S);
-	// void Move(Snake &S);
-	// void SpeedUp();
-	int GameOver(Snake &S);
+	int LostLife(Snake &S);
 	void Reshape(int w, int h);
-	void Display(void);
+	void Display(Snake &S, Food &F);
 	int HasFood(Snake &S, Food &F);
+	void AddCrashTime(int n){ if (!CRASH_TIME) CRASH_TIME = 1; CRASH_TIME += n; LIFE -= n;}
+	void SpeedUp();
+	int GetLIFE(){ return LIFE;}
+	int GetSCORE(){ return SCORE;}
+	void AddSCORE(int n){ SCORE += n;}
 };
 
 Control::Control(int d){
 	ChangeDIR(d); 
 	TIMER = TIME_BASE;
-	OVER = 0;
 	PAUSE = 0;
+	CRASH_TIME = 0;
+	LIFE = 100;
+	SCORE = 0;
 }
 
 void Control::SnakeMove(Snake &S){
 	Node *p = new(Node);
 	p->SetPosition(S.GetHead()->GetFD()->GetX(),S.GetHead()->GetFD()->GetY());
-	// p = S.GetHead()->GetFD();
 	p->SetPosition(p->GetX()+MoveX(),p->GetY()+MoveY());
-	cout << p->GetX() << "," << p->GetY() << endl;
-	sleep(1);
-	p->SetColor(WHITE);
-	int i;
-	cin >> i;
+	// Debug
+	// cout << p->GetX() << "," << p->GetY() << endl;
+	// int i;
+	// cin >> i;
 	S.Insert(p);
 	S.Delete();
 	MOVE = DIR;
 
-	S.Show();
+	// S.Show();
 }
 
 int Control::MoveX(){
@@ -75,32 +77,45 @@ int Control::HasFood(Snake &S, Food &F){
     cout << "Head: " << p->GetX() << "," << p->GetY() << endl;
     cout << "Food: " << F.GetX() << "," << F.GetY() << endl << endl;
     
-    // F.SetPosition(7,8);
     if(p->GetX() + MoveX() == F.GetX()
         && p->GetY() + MoveY() == F.GetY() ){
         return 1;
     }
-  //   while(p){
-  //       if(p->GetX() == F.GetX() && p->GetY() == F.GetY()){
-  //           return 1;
-  //       }
-		// p->SetFD(p->GetFD());
-  //   }
+
     return 0;
 }
-// void Control::SpeedUp(){
-// 	if (TIMER >= TIME_MIN){
-// 		TIMER += TIME_UPUNIT;
-// 	}
-// }
-int Control::GameOver(Snake &S){
+void Control::SpeedUp(){
+	if (TIMER >= TIME_MIN){
+		TIMER -= TIME_UPUNIT;
+	}
+}
+int Control::LostLife(Snake &S){
 	Node* p = new(Node);
 	for(p = S.GetHead()->GetFD(); p->GetX() != -1; p=p->GetFD()){
 		if( p->GetX() == S.GetHead()->GetFD()->GetX() + MoveX()
 			&& p->GetY() == S.GetHead()->GetFD()->GetY() + MoveY()){
-            glutSetWindowTitle("  FINISHED !!");  
-        	cout << "GameOver" << endl;
-        	return 1;
+			char buf[100];
+        	AddCrashTime(1);
+			sprintf(buf, " You crash yourself :)  -1s  Life: %d", LIFE);
+			glutSetWindowTitle(buf);  
+
+        	if (LIFE > 0) return 0; // can pass yourself :)
+        	else return 1; // if life <= 0 , can't pass 
+
+		}
+		else if( S.GetHead()->GetFD()->GetX() + MoveX() == -1 || S.GetHead()->GetFD()->GetY() + MoveY() == -1 
+			|| S.GetHead()->GetFD()->GetX() + MoveX() == MAP_WIDHT || S.GetHead()->GetFD()->GetY() + MoveY() == MAP_HEIGHT){
+			char buf[100];
+			AddCrashTime(1); 
+			sprintf(buf, " Crash The Wall :)  -1s  Life: %d", LIFE);
+			glutSetWindowTitle(buf);  
+        	// cout << "Wall!!" << endl;
+        	return 1; // Can't move it crash wall
+		}
+		else{
+			char buf[100];
+			sprintf(buf," Life: %d   Score: %d", LIFE, SCORE);
+			glutSetWindowTitle(buf);
 		}
 	}
 	cout << "continue" << endl;
@@ -108,8 +123,9 @@ int Control::GameOver(Snake &S){
 }
 
 void Control::Reshape(int w, int h) {  
-	if (h == 0) // Prevent A Divide By Zero If The Window Is Too Small  
-		h = 1;
+	if (h == 0) h = 1;
+	// Prevent A Divide By Zero If The Window Is Too Small  
+
 	glViewport(0, 0, w, h); // Reset The Current Viewport And Perspective Transformation  
 
 	glMatrixMode(GL_PROJECTION);
@@ -118,7 +134,7 @@ void Control::Reshape(int w, int h) {
 	gluOrtho2D(0.0f, (GLdouble)w, 0.0f, (GLdouble)h);  
 }
 
-void Control::Display(){
+void Control::Display(Snake &S, Food &F){
 	glClearColor(BLACK, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear The Screen And The Depth Buffer  
 	
@@ -126,6 +142,7 @@ void Control::Display(){
 	glTranslatef(-1.0f, 1.0f, 0.0f);
 
 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+
 	glBegin(GL_QUADS);
     glColor3f(WHITE);
 	double unit_x = 2.0f/MAP_WIDHT;
@@ -140,7 +157,32 @@ void Control::Display(){
         }
     }
 	glEnd();
+	// Food
+	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);  
+	glBegin(GL_QUADS);
+	glColor3f(F.GetR(), F.GetG(), F.GetB());
 
+    glVertex3f((F.GetY()  ) * unit_x, -(F.GetX()  ) * unit_y, 0.0f);
+    glVertex3f((F.GetY()+1) * unit_x, -(F.GetX()  ) * unit_y, 0.0f);
+    glVertex3f((F.GetY()+1) * unit_x, -(F.GetX()+1) * unit_y, 0.0f);
+    glVertex3f((F.GetY()  ) * unit_x, -(F.GetX()+1) * unit_y, 0.0f);
+	glEnd();
+
+	// Snake
+	Node* p = S.GetTail()->GetBK();
+	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+	while (p->GetY() != -1){
+		glBegin(GL_QUADS);
+		glColor3f(p->GetR(), p->GetG(), p->GetB());
+		// glColor3f(GREEN);
+        glVertex3f((p->GetY()  ) * unit_x, -(p->GetX()  ) * unit_y, 0.0f);  
+        glVertex3f((p->GetY()+1) * unit_x, -(p->GetX()  ) * unit_y, 0.0f);  
+        glVertex3f((p->GetY()+1) * unit_x, -(p->GetX()+1) * unit_y, 0.0f);  
+        glVertex3f((p->GetY()  ) * unit_x, -(p->GetX()+1) * unit_y, 0.0f);  
+		glEnd();
+		p = p->GetBK();
+	}
+	// 
 	glutSwapBuffers();
 }
 

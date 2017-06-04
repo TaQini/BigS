@@ -1,3 +1,4 @@
+
 // GAME
 #define KEY_ESCAPE	0x1B
 #define KEY_SPACE	0x20
@@ -8,8 +9,8 @@
 
 #define LEVEL_UP	20
 
-#define TIME_BASE   300
-#define TIME_MIN    50
+#define TIME_BASE   500
+#define TIME_MIN    150
 #define TIME_UPUNIT 50
  
 // DIRECTOR
@@ -23,3 +24,5 @@
 #define BLACK   0.0f,0.0f,0.0f
 #define YELLOW 	1.0f,1.0f,0.0f
 #define GREEN	0.0f,1.0f,0.0f
+#define GREY	0.5f,0.5f,0.5f
+
