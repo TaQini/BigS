@@ -25,7 +25,7 @@ void OnTimer(int value){
 		if(!CTRL->LostLife(*BigS)){
 			if(CTRL->HasFood(*BigS, *Beans)){
 				Beans->EatenBy(*BigS);
-				CTRL->AddSCORE(1);
+				CTRL->AddSCORE(*BigS, *Beans);
 				// BigS->Show();
 				cout << "ok!! GOT 1 point!" << endl << endl;
 				Beans->RandomPlace(*BigS);
@@ -40,11 +40,10 @@ void OnTimer(int value){
 				glutSetWindowTitle(buf);  
 
 				// But you can also play it :)			
-				// glutSetWindowTitle("  GAME OVER !!  ");
-				// sleep(1);
-				// glutSetWindowTitle("  BYE BYE !!  ");
-				// sleep(1);
-				// exit(0);
+				sleep(1);
+				glutSetWindowTitle("  BYE BYE !!  ");
+				sleep(1);
+				exit(0);
 			}
 		}
 	}	

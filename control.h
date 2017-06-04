@@ -30,7 +30,7 @@ public:
 	void SpeedUp();
 	int GetLIFE(){ return LIFE;}
 	int GetSCORE(){ return SCORE;}
-	void AddSCORE(int n){ SCORE += n;}
+	void AddSCORE(Snake &S, Food &F);
 	int GetStartTime(){ return START_TIME;}
 };
 
@@ -38,7 +38,7 @@ Control::Control(int d){
 	ChangeDIR(d); 
 	TIMER = TIME_BASE;
 	PAUSE = 0;
-	LIFE = 100;
+	LIFE = INIT_LIFE;
 	SCORE = 0;
 	START_TIME = time(NULL);
 }
@@ -95,18 +95,17 @@ void Control::SpeedUp(){
 		tmp = TIMER;
 	}
 	if (SCORE == 30){
-		glutSetWindowTitle("  CRAZY MODE !!  ");
+		glutSetWindowTitle("  MAX SPEED !!  ");
 		TIMER = 100;
 		tmp = TIMER;
 	}
 	if (SCORE == 50){
-		glutSetWindowTitle("  HENTAI MODE !!  ");
+		glutSetWindowTitle("  CRAZY MODE !!  ");
 		TIMER = 75;
 		tmp = TIMER;
 	}
-
-
 }
+
 int Control::LostLife(Snake &S){
 	Node* p = new(Node);
 	for(p = S.GetHead()->GetFD(); p->GetX() != -1; p=p->GetFD()){
@@ -204,4 +203,48 @@ void Control::Display(Snake &S, Food &F){
 	glutSwapBuffers();
 }
 
+void Control::AddSCORE(Snake &S, Food &F){
+	if (F.CmpColor(YELLOW)){
+		SCORE += 1;
+	}
+	else if(F.CmpColor(BLUE)){
+		S.Delete();
+		SCORE += 3;
+		LIFE += 1;
+		if(S.GetLength() > 2){
+			S.Delete();
+			S.Delete();
+		}
+		else{
+			LIFE += 2;
+		}
+	}
+	else if(F.CmpColor(RED)){
+		S.Delete();
+		int p = F.RandInt(100);
+		if( p < 30){
+			SCORE += 10;
+		}
+		else if( p < 70){
+			LIFE += 10;
+		}
+		else{
+			if(S.GetLength() > p%10+1){
+				for(int i=0; i<p%10+1; i++){
+					S.Delete();
+				}
+			}
+			else{
+				LIFE += 5;
+				SCORE += 5;
+			}
+		}
+	}
+	else if(F.CmpColor(ORANGE)){
+		SCORE += 50;
+		for(int i=S.GetLength(); i > 2; i--){
+			S.Delete();
+		}
+	}
+}
 #endif

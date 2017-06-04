@@ -4,15 +4,12 @@
 class Food : public POS, public RGB{
 public:
 	void RandomPlace(Snake &S);
-	Food();
+	Food(){}
 	void EatenBy(Snake &S);
 	int RandInt(int sz);
 	int CheckPos(int x, int y);
 };
 
-Food::Food(){
-	SetColor(YELLOW);
-}
 int Food::CheckPos(int x, int y){
 	if(GetX() == x && GetY() == y){
 		return 0;
@@ -39,7 +36,19 @@ void Food::RandomPlace(Snake &S){
     do{
 		SetPosition( RandInt(MAP_WIDHT),RandInt(MAP_HEIGHT));
     }while (!S.CheckPos(GetX(),GetY()));
-    // cout << GetX() << "," << GetY() << endl;
+    int p = RandInt(100);
+    if( p < 25 ){
+    	SetColor(BLUE);
+    }
+    else if( p < 35 ){
+    	SetColor(RED);
+    }
+    else if( p < 38 ){
+    	SetColor(ORANGE);
+    }
+    else{
+    	SetColor(YELLOW);
+    }
 }
 
 #endif

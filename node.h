@@ -21,8 +21,15 @@ public:
 	float GetR() { return R;}
 	float GetG() { return G;}
 	float GetB() { return B;}
-	RGB GetColor() {return *this;}
+	int CmpColor(float r, float g, float b);
 };
+
+int RGB::CmpColor(float r, float g, float b){
+	if(r == R && g == G && b == B)
+		return 1;
+	else 
+		return 0;
+}
 
 // CLASS NODE
 class Node : public RGB, public POS{

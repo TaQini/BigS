@@ -6,8 +6,7 @@
 #define MAP_HEIGHT 	16
 
 #define INIT_LENGTH 4
-
-#define LEVEL_UP	20
+#define INIT_LIFE	5
 
 #define TIME_BASE   300
 #define TIME_MIN    150
@@ -22,7 +21,12 @@
 // COLOR
 #define WHITE	1.0f,1.0f,1.0f
 #define BLACK   0.0f,0.0f,0.0f
+
 #define YELLOW 	1.0f,1.0f,0.0f
+#define BLUE	0.0f,0.0f,1.0f
+#define RED		1.0f,0.0f,0.0f
+#define ORANGE	1.0f,0.5f,0.0f
+
 #define GREEN	0.0f,1.0f,0.0f
 #define GREY	0.5f,0.5f,0.5f
 
