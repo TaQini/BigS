@@ -37,13 +37,13 @@ void Food::RandomPlace(Snake &S){
 		SetPosition( RandInt(MAP_WIDHT),RandInt(MAP_HEIGHT));
     }while (!S.CheckPos(GetX(),GetY()));
     int p = RandInt(100);
-    if( p < 25 ){
+    if( p < 20 ){
     	SetColor(BLUE);
     }
-    else if( p < 35 ){
+    else if( p < 30 ){
     	SetColor(RED);
     }
-    else if( p < 38 ){
+    else if( p < 33 ){
     	SetColor(ORANGE);
     }
     else{

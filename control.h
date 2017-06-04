@@ -87,7 +87,7 @@ int Control::HasFood(Snake &S, Food &F){
 }
 void Control::SpeedUp(){
 	int tmp = TIMER;
-	if (TIMER >= TIME_MIN){
+	if (TIMER >= TIME_MIN && SCORE < 30){
 		TIMER = TIME_BASE - TIME_UPUNIT*(SCORE / 3);
 	}
 	if (TIMER != tmp){
@@ -97,12 +97,16 @@ void Control::SpeedUp(){
 	if (SCORE == 30){
 		glutSetWindowTitle("  MAX SPEED !!  ");
 		TIMER = 100;
-		tmp = TIMER;
+	}
+	if (SCORE > 30){
+		TIMER = 100;
 	}
 	if (SCORE == 50){
 		glutSetWindowTitle("  CRAZY MODE !!  ");
 		TIMER = 75;
-		tmp = TIMER;
+	}
+	if (SCORE > 50){
+		TIMER = 75;
 	}
 }
 
@@ -208,7 +212,8 @@ void Control::AddSCORE(Snake &S, Food &F){
 		SCORE += 1;
 	}
 	else if(F.CmpColor(BLUE)){
-		S.Delete();
+		int p = F.RandInt(100);
+		if (p & 1) S.Delete();
 		SCORE += 3;
 		LIFE += 1;
 		if(S.GetLength() > 2){

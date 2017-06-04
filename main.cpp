@@ -40,7 +40,7 @@ void OnTimer(int value){
 				glutSetWindowTitle(buf);  
 
 				// But you can also play it :)			
-				sleep(1);
+				sleep(5);
 				glutSetWindowTitle("  BYE BYE !!  ");
 				sleep(1);
 				exit(0);
