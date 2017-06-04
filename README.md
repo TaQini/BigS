@@ -12,6 +12,11 @@ Ver 1.0 Finished!!
  - While you crash the wall, you can change move direction to continue.
  - The life will keep losting while you crash the wall, so please move away quickly.
 
+## Control
+ - Up Down Left Right to MOVE
+ - Space to PAUSE
+ - Esc to EXIT
+
 ## What's more
  - If your life is lower than 0, the game will not over :)
  - You can play it with a minus life.

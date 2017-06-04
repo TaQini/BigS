@@ -9,7 +9,7 @@
 
 #define LEVEL_UP	20
 
-#define TIME_BASE   500
+#define TIME_BASE   300
 #define TIME_MIN    150
 #define TIME_UPUNIT 50
  

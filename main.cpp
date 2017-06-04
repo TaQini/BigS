@@ -5,6 +5,7 @@ using namespace std;
 #include <GL/glu.h>  
 #include <unistd.h>  
 #include <stdio.h>
+#include <time.h>
 #include <fcntl.h>
 #include "conf.h"
 #include "node.h"
@@ -34,7 +35,10 @@ void OnTimer(int value){
 		}
 		else{
 			if(CTRL->GetLIFE() <= 0){
-				glutSetWindowTitle("  GAME OVER !!  ");
+				char buf[100];
+				sprintf(buf, "  GAME OVER !!  Final SCORE: %d", CTRL->GetSCORE());
+				glutSetWindowTitle(buf);  
+
 				// But you can also play it :)			
 				// glutSetWindowTitle("  GAME OVER !!  ");
 				// sleep(1);
@@ -43,7 +47,10 @@ void OnTimer(int value){
 				// exit(0);
 			}
 		}
-	}
+	}	
+
+	CTRL->SpeedUp();
+
 	glutSwapBuffers();
 	glutTimerFunc(CTRL->GetTIMER(), OnTimer, 1);
 }
@@ -62,7 +69,7 @@ void OnKeyPressed(unsigned char key, int x, int y){
     		CTRL->ChangePAUSE();
     		// Hidden function : Once Press PAUSE, speed *= 2
     		if(!CTRL->GetPAUSE())
-	            CTRL->SpeedUp();
+			    glutTimerFunc(CTRL->GetTIMER(), OnTimer, 1);
     		break;
     	case KEY_ESCAPE:
 			exit(0);

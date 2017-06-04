@@ -6,9 +6,9 @@ private:
 	int MOVE;
 	int TIMER;
 	int PAUSE;
-	int CRASH_TIME;
 	int LIFE;
 	int SCORE;
+	int START_TIME;
 public:
 	Control(int d);
 	int GetDIR(){ return DIR;}
@@ -26,20 +26,21 @@ public:
 	void Reshape(int w, int h);
 	void Display(Snake &S, Food &F);
 	int HasFood(Snake &S, Food &F);
-	void AddCrashTime(int n){ if (!CRASH_TIME) CRASH_TIME = 1; CRASH_TIME += n; LIFE -= n;}
+	void SubLife(int n){ LIFE -= n;}
 	void SpeedUp();
 	int GetLIFE(){ return LIFE;}
 	int GetSCORE(){ return SCORE;}
 	void AddSCORE(int n){ SCORE += n;}
+	int GetStartTime(){ return START_TIME;}
 };
 
 Control::Control(int d){
 	ChangeDIR(d); 
 	TIMER = TIME_BASE;
 	PAUSE = 0;
-	CRASH_TIME = 0;
 	LIFE = 100;
 	SCORE = 0;
+	START_TIME = time(NULL);
 }
 
 void Control::SnakeMove(Snake &S){
@@ -85,9 +86,26 @@ int Control::HasFood(Snake &S, Food &F){
     return 0;
 }
 void Control::SpeedUp(){
+	int tmp = TIMER;
 	if (TIMER >= TIME_MIN){
-		TIMER -= TIME_UPUNIT;
+		TIMER = TIME_BASE - TIME_UPUNIT*(SCORE / 3);
 	}
+	if (TIMER != tmp){
+		glutSetWindowTitle("  SPEED UP !!  ");
+		tmp = TIMER;
+	}
+	if (SCORE == 30){
+		glutSetWindowTitle("  CRAZY MODE !!  ");
+		TIMER = 100;
+		tmp = TIMER;
+	}
+	if (SCORE == 50){
+		glutSetWindowTitle("  HENTAI MODE !!  ");
+		TIMER = 75;
+		tmp = TIMER;
+	}
+
+
 }
 int Control::LostLife(Snake &S){
 	Node* p = new(Node);
@@ -95,7 +113,7 @@ int Control::LostLife(Snake &S){
 		if( p->GetX() == S.GetHead()->GetFD()->GetX() + MoveX()
 			&& p->GetY() == S.GetHead()->GetFD()->GetY() + MoveY()){
 			char buf[100];
-        	AddCrashTime(1);
+        	SubLife(1);
 			sprintf(buf, " You crash yourself :)  -1s  Life: %d", LIFE);
 			glutSetWindowTitle(buf);  
 
@@ -106,7 +124,7 @@ int Control::LostLife(Snake &S){
 		else if( S.GetHead()->GetFD()->GetX() + MoveX() == -1 || S.GetHead()->GetFD()->GetY() + MoveY() == -1 
 			|| S.GetHead()->GetFD()->GetX() + MoveX() == MAP_WIDHT || S.GetHead()->GetFD()->GetY() + MoveY() == MAP_HEIGHT){
 			char buf[100];
-			AddCrashTime(1); 
+			SubLife(1); 
 			sprintf(buf, " Crash The Wall :)  -1s  Life: %d", LIFE);
 			glutSetWindowTitle(buf);  
         	// cout << "Wall!!" << endl;
