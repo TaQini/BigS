@@ -37,12 +37,14 @@ void OnTimer(int value){
 			if(CTRL->GetLIFE() <= 0){
 				char buf[100];
 				sprintf(buf, "GAME OVER !!  Final SCORE: %d", CTRL->GetSCORE());
-				glutSetWindowTitle(buf);  
-				cout << buf << endl;
+				glutSetWindowTitle(buf);
+				CTRL->state(buf);  
+				// cout << buf << endl;
 				// But you can also play it :)			
 				sleep(3);
 				glutSetWindowTitle("BYE BYE !!");
-				cout << "BYE BYE !!" << endl;
+				CTRL->state("BYE BYE !!");
+				// cout << "BYE BYE !!" << endl;
 				sleep(1);
 				exit(0);
 			}
@@ -67,6 +69,7 @@ void OnKeyPressed(unsigned char key, int x, int y){
     switch(key){
     	case KEY_SPACE:
     		CTRL->ChangePAUSE();
+    		CTRL->state("");
     		// Hidden function : Once Press PAUSE, speed *= 2
     		// if(!CTRL->GetPAUSE())
 			    // glutTimerFunc(CTRL->GetTIMER(), OnTimer, 1);
@@ -105,22 +108,23 @@ void OnDirection(int key, int x, int y){
 
 void welcome(void){
 	system("clear");
-
-	cout << "    Welcome to TaQini's Game \n        -- Snake Eat Beans !" << endl;
-	cout << endl;
-	cout << "You will control a snake to eat Beans." << endl;
-	cout << endl;
-	cout << "* Blue and Red Beans have some special function :)" << endl;
-	cout << endl;
-	cout << "When your score is up to 1000, You WIN the Game!" << endl;
-	cout << endl << endl;
-	cout << "This window will show some info 4 u~" << endl;
-	cout << endl;
-	cout << "Good Luck!" << endl;
-	cout << endl;
-	cout << "Press \"SPACE\" to START !!" << endl;
-	cout << endl;
+	cout << " +--------------------------------------------+" << endl;
+	cout << " |          Welcome to TaQini's Game          |" << endl;
+	cout << " |         __________________________         |" << endl;
+	cout << " |                               __           |" << endl;
+	cout << " |             /     ,         /    )         |" << endl;
+	cout << " |         ---/__--------__----\\-----         |" << endl;
+	cout << " |           /   ) /   /   )    \\             |" << endl;
+	cout << " |         _(___/_/___(___/_(____/___         |" << endl;
+	cout << " |                       /                    |" << endl;
+	cout << " |                   (_ /                     |" << endl;
+	cout << " |                                            |" << endl;
+	cout << " +--------------------------------------------+" << endl;
+	cout << " |        Your Goal: Score up to 1000         |" << endl;
+	cout << " |           Press SPACE to START !!          |" << endl;
+	cout << " +--------------------------------------------+" << endl;
 }
+
 int main(int argc, char ** argv) {
 	CTRL = new Control(DIR_RIGHT);
 	BigS = new Snake(4);
@@ -129,13 +133,12 @@ int main(int argc, char ** argv) {
 	Beans->RandomPlace(*BigS);
 
 	glutInit(&argc, argv);
-	// glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);    
-
-	// glutInitDisplayMode(GLUT_RGBA);
-	glutInitWindowSize(500, 500);
-	glutInitWindowPosition(100, 100);
+	// glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_RGBA);
+	glutInitWindowSize(960, 1200);
+	glutInitWindowPosition(1000, 1000);
 	glutCreateWindow("TaQini\'s Snake");// Title
-	welcome();	
+	welcome();
 	// Draw and Display
 	glutReshapeFunc(Reshape);
 	glutDisplayFunc(Display);

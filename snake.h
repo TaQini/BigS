@@ -16,14 +16,14 @@ public:
 	Node* GetTail(){ return tail;}
 	int GetLength(){ return length;}
 	void SetLength(int n){ length = n;}
-	void Show(){
-		Node *p = new(Node); 
-		p = head;
-		while(p){
-			cout << p->GetX() << "," << p->GetY() << endl;
-			p = p->GetFD();
-		} 
-	}
+	// void Show(){
+	// 	Node *p = new(Node); 
+	// 	p = head;
+	// 	while(p){
+	// 		cout << p->GetX() << "," << p->GetY() << endl;
+	// 		p = p->GetFD();
+	// 	} 
+	// }
 };
 // CLASS SNAKE
 int Snake::CheckPos(int x, int y){
