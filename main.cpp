@@ -36,15 +36,14 @@ void OnTimer(int value){
 		else{
 			if(CTRL->GetLIFE() <= 0){
 				char buf[100];
-				sprintf(buf, "GAME OVER !!  Final SCORE: %d", CTRL->GetSCORE());
+				sprintf(buf, GAMEOVER_INFO, CTRL->GetSCORE());
 				glutSetWindowTitle(buf);
 				CTRL->state(buf);  
-				// cout << buf << endl;
+				
 				// But you can also play it :)			
 				sleep(3);
-				glutSetWindowTitle("BYE BYE !!");
-				CTRL->state("BYE BYE !!");
-				// cout << "BYE BYE !!" << endl;
+				glutSetWindowTitle(BYEBYE);
+				CTRL->state(BYEBYE);
 				sleep(1);
 				exit(0);
 			}
@@ -65,14 +64,26 @@ void Display(){
 }
 
 void OnKeyPressed(unsigned char key, int x, int y){
-	// cout << "[Debug] key: " << (int)(key) << endl;
+	// state("[Debug] key: "+(key));
     switch(key){
+		case 'w':
+			if(CTRL->GetMOVE() != DIR_DOWN) 
+				CTRL->ChangeDIR(DIR_UP);
+			break;
+		case 's':
+			if(CTRL->GetMOVE() != DIR_UP)
+				CTRL->ChangeDIR(DIR_DOWN);
+			break;
+		case 'a':
+			if(CTRL->GetMOVE() != DIR_RIGHT)
+				CTRL->ChangeDIR(DIR_LEFT);
+			break;
+		case 'd':
+			if(CTRL->GetMOVE() != DIR_LEFT)
+				CTRL->ChangeDIR(DIR_RIGHT);
+			break;
     	case KEY_SPACE:
     		CTRL->ChangePAUSE();
-    		CTRL->state("");
-    		// Hidden function : Once Press PAUSE, speed *= 2
-    		// if(!CTRL->GetPAUSE())
-			    // glutTimerFunc(CTRL->GetTIMER(), OnTimer, 1);
     		break;
     	case KEY_ESCAPE:
 			exit(0);
@@ -83,7 +94,6 @@ void OnKeyPressed(unsigned char key, int x, int y){
 
 void OnDirection(int key, int x, int y){
 	if (CTRL->GetPAUSE()) return;
-	// cout << "MOVE::" << CTRL->GetMOVE() << endl;
 	switch(key){
 		case GLUT_KEY_UP:
 			if(CTRL->GetMOVE() != DIR_DOWN) 
@@ -108,21 +118,21 @@ void OnDirection(int key, int x, int y){
 
 void welcome(void){
 	system("clear");
-	cout << " +--------------------------------------------+" << endl;
-	cout << " |          Welcome to TaQini's Game          |" << endl;
-	cout << " |         __________________________         |" << endl;
-	cout << " |                               __           |" << endl;
-	cout << " |             /     ,         /    )         |" << endl;
-	cout << " |         ---/__--------__----\\-----         |" << endl;
-	cout << " |           /   ) /   /   )    \\             |" << endl;
-	cout << " |         _(___/_/___(___/_(____/___         |" << endl;
-	cout << " |                       /                    |" << endl;
-	cout << " |                   (_ /                     |" << endl;
-	cout << " |                                            |" << endl;
-	cout << " +--------------------------------------------+" << endl;
-	cout << " |        Your Goal: Score up to 1000         |" << endl;
-	cout << " |           Press SPACE to START !!          |" << endl;
-	cout << " +--------------------------------------------+" << endl;
+	cout << " +----------------------------------------------------+" << endl;
+	cout << " |              Welcome to TaQini's Game              |" << endl;
+	cout << " |             __________________________             |" << endl;
+	cout << " |                                   __               |" << endl;
+	cout << " |                 /     ,         /    )             |" << endl;
+	cout << " |             ---/__--------__----\\-----             |" << endl;
+	cout << " |               /   ) /   /   )    \\                 |" << endl;
+	cout << " |             _(___/_/___(___/_(____/___             |" << endl;
+	cout << " |                           /                        |" << endl;
+	cout << " |                       (_ /                         |" << endl;
+	cout << " |                                                    |" << endl;
+	cout << " +----------------------------------------------------+" << endl;
+	cout << " |            Your Goal: Score up to 1000             |" << endl;
+	cout << " |               Press SPACE to START !!              |" << endl;
+	cout << " +----------------------------------------------------+" << endl;
 }
 
 int main(int argc, char ** argv) {
@@ -139,6 +149,7 @@ int main(int argc, char ** argv) {
 	glutInitWindowPosition(1000, 1000);
 	glutCreateWindow("TaQini\'s Snake");// Title
 	welcome();
+	
 	// Draw and Display
 	glutReshapeFunc(Reshape);
 	glutDisplayFunc(Display);

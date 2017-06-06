@@ -17,7 +17,7 @@ public:
 	int GetPAUSE(){ return PAUSE;}
 
 	void ChangeDIR(int d){ DIR = d;}
-	void ChangePAUSE(){ PAUSE = !PAUSE;}
+	void ChangePAUSE();
 	int MoveX();
 	int MoveY();
 	void SnakeEat(Snake &S, Food &F);
@@ -93,30 +93,25 @@ void Control::SpeedUp(){
 		TIMER = TIME_BASE - TIME_UPUNIT*(SCORE / 10);
 	}
 	if (TIMER != tmp){
-		glutSetWindowTitle("SPEED UP !!");
-		state("SPEED UP !!");
-		//cout << "SPEED UP !!"<< endl;
+		glutSetWindowTitle(SPEED_UP);
+		state(SPEED_UP);
 		tmp = TIMER;
 	}
 	if (SCORE == 60){
-		glutSetWindowTitle("MAX SPEED !!");
 		SCORE += 5;
 		LIFE += 3;
-		state("MAX SPEED !!");
-		//cout << "MAX SPEED !!" << endl;
-		//cout << "Score +5  Life +3" << endl;
+		glutSetWindowTitle(SPEED_MAX);
+		state(SPEED_MAX);
 		TIMER = 100;
 	}
 	if (SCORE > 60){
 		TIMER = 100;
 	}
 	if (SCORE == 120){
-		glutSetWindowTitle("CRAZY MODE !!");
 		SCORE += 10;
 		LIFE += 5;
-		state("CRAZY MODE !!");
-		//cout << "CRAZY MODE !!" << endl;
-		//cout << "Score +10  Life +5" << endl;
+		glutSetWindowTitle(SPEED_CRAZY);
+		state(SPEED_CRAZY);
 		TIMER = 75;
 	}
 	if (SCORE > 120){
@@ -129,36 +124,28 @@ int Control::LostLife(Snake &S){
 	for(p = S.GetHead()->GetFD(); p->GetX() != -1; p=p->GetFD()){
 		if( p->GetX() == S.GetHead()->GetFD()->GetX() + MoveX()
 			&& p->GetY() == S.GetHead()->GetFD()->GetY() + MoveY()){
-			char buf[100];
         	SubLife(1);
-			sprintf(buf, "You crash yourself :)  -1s  Life: %d", LIFE);
-        	state(buf);
-			glutSetWindowTitle(buf);  
-			//cout << buf << endl;
+        	state(CRASH_SELF);
+			glutSetWindowTitle(CRASH_SELF);  
 
+			// Hidden mode
         	if (LIFE > 0) return 0; // can pass yourself :)
         	else return 1; // if life <= 0 , can't pass 
 
 		}
 		else if( S.GetHead()->GetFD()->GetX() + MoveX() == -1 || S.GetHead()->GetFD()->GetY() + MoveY() == -1 
 			|| S.GetHead()->GetFD()->GetX() + MoveX() == MAP_WIDHT || S.GetHead()->GetFD()->GetY() + MoveY() == MAP_HEIGHT){
-			char buf[100];
 			SubLife(1);
-			sprintf(buf, "Crash The Wall :)  -1s  Life: %d", LIFE);
-        	state(buf); 
-			glutSetWindowTitle(buf);  
-			//cout << buf << endl;
-        	// //cout << "Wall!!" << endl;
+        	state(CRASH_WALL); 
+			glutSetWindowTitle(CRASH_WALL);  
         	return 1; // Can't move it crash wall
 		}
 		else{
 			char buf[100];
-			sprintf(buf,"Life: %d   Score: %d", LIFE, SCORE);
+			sprintf(buf, GAMEBOX_INFO, LIFE, SCORE);
 			glutSetWindowTitle(buf);
-			// //cout << buf << endl;
 		}
 	}
-	// //cout << "continue" << endl;
 	return 0;
 }
 
@@ -216,7 +203,7 @@ void Control::Display(Snake &S, Food &F){
 void Control::AddSCORE(Snake &S, Food &F){
 	if (F.CmpColor(YELLOW)){
 		SCORE += 1;
-		state("[Y] Score +1");
+		state(YELLOW_BEAN);
 	}
 	else if(F.CmpColor(BLUE)){
 		S.Delete();
@@ -227,15 +214,15 @@ void Control::AddSCORE(Snake &S, Food &F){
 			if (p & 1) {
 				S.Delete();
 				LIFE += 1;
-				state("[B] Score +3, Life +1, Length -2");
+				state(BLUE_EXTRAL);
 			}
 			else{
-				state("[B] Score +3, Length -1");
+				state(BLUE_NORMAL);
 			}
 		}
 		else{
 			LIFE += 2;
-			state("Length is too small! Life +2");
+			state(BLUE_CANTCUT);
 		}
 	}
 	else if(F.CmpColor(RED)){
@@ -244,11 +231,11 @@ void Control::AddSCORE(Snake &S, Food &F){
 		if( p < 30){
 			LIFE += 3;
 			SCORE += 5;
-			state("[R] Score +5, Life +3 ");
+			state(RED_CASE_1);
 		}
 		else if( p < 70){
 			LIFE += 10;
-			state("[R] Life +10 ");
+			state(RED_CASE_2);
 		}
 		else{
 			if(S.GetLength() > p%10+1){
@@ -256,13 +243,13 @@ void Control::AddSCORE(Snake &S, Food &F){
 					S.Delete();
 				}
 				char buf[100];
-				sprintf(buf, "[R] Length -%d ",p%10+1);
+				sprintf(buf, RED_CASE_3, p%10+1);
 				state(buf);
 			}
 			else{
 				LIFE += 5;
 				SCORE += 5;
-				state("Length is too small! Score +5, Life +5");
+				state(RED_CANTCUT);
 			}
 		}
 	}
@@ -271,10 +258,9 @@ void Control::AddSCORE(Snake &S, Food &F){
 			S.Delete();
 		}
 		LIFE += 10;
-		state("[*] Length will be Back to 2 ,Life +10! ");
+		state(RARE_BEAN);
 	}
 }
-
 
 string Control::Conv(int n, int i){
 	switch (n){
@@ -373,26 +359,6 @@ string Control::Conv(int n, int i){
 void Control::state(char *msg){
 	system("clear");
 	cout << " +-------------------------+--------------------------+" << endl;
-	cout << " |                         |                          |" << endl;
-	cout << " |          Life           |          Score           |" << endl;
-	cout << " |                         |                          |" << endl;
-	cout << " +----------------------------------------------------+" << endl;
-
-	int l0 = LIFE / 100 % 10;
-	int l1 = LIFE / 10 % 10;
-	int l2 = LIFE / 1 % 10;
-
-	int s0 = SCORE / 100 % 10;
-	int s1 = SCORE / 10 % 10;
-	int s2 = SCORE / 1 % 10;
-
-	for(int i=0;i<6;i++){
-		cout << " |" + Conv(l0,i) + Conv(l1,i) + Conv(l2,i) + " | " + Conv(s0,i) + Conv(s1,i) + Conv(s2,i) + " | " << endl;
-	}
-
-	cout << " |                         |                          |" << endl;
-	cout << " +-------------------------+--------------------------+" << endl;
-	cout << " |             __________________________             |" << endl;
 	cout << " |                                   __               |" << endl;
 	cout << " |                 /     ,         /    )             |" << endl;
 	cout << " |             ---/__--------__----\\-----             |" << endl;
@@ -401,8 +367,43 @@ void Control::state(char *msg){
 	cout << " |                           /                        |" << endl;
 	cout << " |                       (_ /                         |" << endl;
 	cout << " |                                                    |" << endl;
+	cout << " +-------------------------+--------------------------+" << endl;
+	cout << " |                         |                          |" << endl;
+	cout << " |          Life           |          Score           |" << endl;
+	cout << " |                         |                          |" << endl;
 	cout << " +----------------------------------------------------+" << endl;
-	cout << endl << "    " << msg << endl;
+
+	int l0 = LIFE / 100 % 10;
+	int l1 = LIFE / 10 % 10;
+	int l2 = LIFE / 1 % 10;
+	int s0 = SCORE / 100 % 10;
+	int s1 = SCORE / 10 % 10;
+	int s2 = SCORE / 1 % 10;
+	for(int i=0;i<6;i++){
+		cout << " |" + Conv(l0,i) + Conv(l1,i) + Conv(l2,i) + " | " + Conv(s0,i) + Conv(s1,i) + Conv(s2,i) + " | " << endl;
+	}
+	cout << " |                         |                          |" << endl;
+	cout << " +----------------------------------------------------+" << endl;
+	
+	string tmp = msg;
+	while (tmp.size() < 52){
+		if (tmp.size() & 1) tmp = " " + tmp;
+		else tmp = tmp + " ";
+	}
+	// Middle 
+
+	cout << " |                                                    |" << endl;
+	cout << " |"                    <<  tmp  <<                   "|"<< endl;
+	cout << " |                                                    |" << endl;
+	cout << " +----------------------------------------------------+" << endl;
+
+}
+void Control::ChangePAUSE(){
+	PAUSE = !PAUSE;
+	if(PAUSE)
+		state(PAUSE_INFO);
+	else
+		state(NULL_MSG);
 }
 #endif
 

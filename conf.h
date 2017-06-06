@@ -1,8 +1,8 @@
 // GAME
 #define KEY_ESCAPE	0x1B
 #define KEY_SPACE	0x20
-#define MAP_WIDHT  	16
-#define MAP_HEIGHT 	16
+#define MAP_WIDHT  	24
+#define MAP_HEIGHT 	24
 
 #define INIT_LENGTH 4
 #define INIT_LIFE	5
@@ -100,3 +100,24 @@
 #define C93 "  \\__  |"
 #define C94 "    / / "
 #define C95 "   /_/  "
+
+// MESSAGE
+#define YELLOW_BEAN 	"Score +1"
+#define BLUE_NORMAL 	"Score +3, Length -1"
+#define BLUE_EXTRAL 	"Score +3, Length -2, Life +1"
+#define BLUE_CANTCUT 	"Life +2"
+#define RED_CASE_1		"Score +5, Life +3"
+#define RED_CASE_2		"Life +10"
+#define RED_CASE_3		"Length -%d"
+#define RED_CANTCUT 	"Score +5, Life +5"
+#define RARE_BEAN		"Length Back to 2! Life +10!"
+#define CRASH_SELF		"Crash yourself :)  -1s"
+#define CRASH_WALL		"Crash the wall!  -1s"
+#define GAMEBOX_INFO	"Life: %d   Score: %d"
+#define SPEED_UP 		"SPEED UP !!"
+#define SPEED_MAX		"MAX SPEED !!"
+#define SPEED_CRAZY		"CRAZY MODE !!"
+#define	GAMEOVER_INFO	"GAME OVER !!  Final SCORE: %d"
+#define BYEBYE			"BYE BYE !!"
+#define PAUSE_INFO		"Press SPACE to continue"
+#define NULL_MSG		"    "

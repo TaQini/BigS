@@ -4,6 +4,17 @@ a snake game write in c++ &amp; openGL
 ## 2017.6.4
 Ver 1.0 Finished!!
 
+## 2017.6.6
+Ver 2.0 done.
+
+## Next ver
+ - Add different color mode
+  - Boy mode (Green Snake)
+  - Girl mode (Pink Snake)
+ - Add more hidden mode
+  - Press o to prevent dead
+  - ...
+
 ## Rule of the GAME
  - Your have 100 life at begining and your score is 0.
  - You can control your Snake to eat the `Beans` to gain score.
@@ -20,6 +31,7 @@ Ver 1.0 Finished!!
 ## What's more
  - If your life is lower than 0, the game will not over :)
  - You can play it with a minus life.
+
 
 TaQini
 2017.6.4
