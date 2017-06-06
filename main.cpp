@@ -27,7 +27,6 @@ void OnTimer(int value){
 				Beans->EatenBy(*BigS);
 				CTRL->AddSCORE(*BigS, *Beans);
 				// BigS->Show();
-				// cout << "ok!! GOT 1 point!" << endl << endl;
 				Beans->RandomPlace(*BigS);
 			}
 			else
@@ -41,11 +40,13 @@ void OnTimer(int value){
 				CTRL->state(buf);  
 				
 				// But you can also play it :)			
-				sleep(3);
-				glutSetWindowTitle(BYEBYE);
-				CTRL->state(BYEBYE);
-				sleep(1);
-				exit(0);
+				if (!CTRL->GetHiddenMode()){
+					sleep(3);
+					glutSetWindowTitle(BYEBYE);
+					CTRL->state(BYEBYE);
+					sleep(1);
+					exit(0);
+				}
 			}
 		}
 	}	
@@ -87,6 +88,8 @@ void OnKeyPressed(unsigned char key, int x, int y){
     		break;
     	case KEY_ESCAPE:
 			exit(0);
+		case 'o':
+			CTRL->OpenHiddenMode();
 		default:
 			break;
     }

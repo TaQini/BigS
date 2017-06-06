@@ -121,3 +121,4 @@
 #define BYEBYE			"BYE BYE !!"
 #define PAUSE_INFO		"Press SPACE to continue"
 #define NULL_MSG		"    "
+#define SUPER_MODE		"Spuer MODE opened !!"

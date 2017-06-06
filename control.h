@@ -9,6 +9,7 @@ private:
 	int LIFE;
 	int SCORE;
 	int START_TIME;
+	int HIDDEN_MODE;
 public:
 	Control(int d);
 	int GetDIR(){ return DIR;}
@@ -34,6 +35,8 @@ public:
 	int GetStartTime(){ return START_TIME;}
 	string Conv(int n, int i);
 	void state(char *msg);
+	void OpenHiddenMode();
+	int GetHiddenMode(){ return HIDDEN_MODE;}
 };
 
 Control::Control(int d){
@@ -43,6 +46,7 @@ Control::Control(int d){
 	LIFE = INIT_LIFE;
 	SCORE = 0;
 	START_TIME = time(NULL);
+	HIDDEN_MODE = 0;
 }
 
 void Control::SnakeMove(Snake &S){
@@ -263,6 +267,8 @@ void Control::AddSCORE(Snake &S, Food &F){
 }
 
 string Control::Conv(int n, int i){
+	if (n < 0) n = 0; // protect from underflow
+	if (n > 9) n = 9; // protect from overflow
 	switch (n){
 		case 0:
 			switch (i){
@@ -405,6 +411,12 @@ void Control::ChangePAUSE(){
 	else
 		state(NULL_MSG);
 }
+
+void Control::OpenHiddenMode(){
+	HIDDEN_MODE = 1;
+	state(SUPER_MODE);
+}
+
 #endif
 
 /*
