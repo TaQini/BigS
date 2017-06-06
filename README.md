@@ -32,6 +32,11 @@ Ver 2.0 done.
  - If your life is lower than 0, the game will not over :)
  - You can play it with a minus life.
 
+## SsreenShot
+### Start Page of Game
+ ![STRAT](./snake_ver2_start.png)
+### Playing
+ ![INGAME](./snake_ver2_game.png)
 
 TaQini
 2017.6.4
