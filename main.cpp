@@ -51,7 +51,9 @@ void OnTimer(int value){
 		}
 	}	
 
-	CTRL->SpeedUp();
+	if(CTRL->GetSCORE() <= 120){
+		CTRL->SpeedUp();
+	}
 
 	glutSwapBuffers();
 	glutTimerFunc(CTRL->GetTIMER(), OnTimer, 1);
@@ -90,6 +92,13 @@ void OnKeyPressed(unsigned char key, int x, int y){
 			exit(0);
 		case 'o':
 			CTRL->OpenHiddenMode();
+			break;
+		case '+':
+			CTRL->AddSpeed(1);
+			break;
+		case '-':
+			CTRL->AddSpeed(-1);
+			break;
 		default:
 			break;
     }

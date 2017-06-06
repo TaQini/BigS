@@ -27,7 +27,7 @@
 #define ORANGE	1.0f,0.5f,0.0f
 
 #define GREEN		0.0f,1.0f,0.0f
-#define DARK_GREEN	0.0f,0.7f,0.0f
+#define DARK_GREEN	0.0f,0.65f,0.0f
 #define DARK_GREY	0.2f,0.2f,0.2f
 
 // NUMBER
@@ -122,3 +122,5 @@
 #define PAUSE_INFO		"Press SPACE to continue"
 #define NULL_MSG		"    "
 #define SUPER_MODE		"Spuer MODE opened !!"
+#define SPEED_ADD		"Speed ++"
+#define SPEED_SUB		"Speed --"

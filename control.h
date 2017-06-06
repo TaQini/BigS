@@ -16,7 +16,6 @@ public:
 	int GetMOVE(){ return MOVE;}
 	int GetTIMER(){ return TIMER;}
 	int GetPAUSE(){ return PAUSE;}
-
 	void ChangeDIR(int d){ DIR = d;}
 	void ChangePAUSE();
 	int MoveX();
@@ -37,6 +36,7 @@ public:
 	void state(char *msg);
 	void OpenHiddenMode();
 	int GetHiddenMode(){ return HIDDEN_MODE;}
+	void AddSpeed(int n);
 };
 
 Control::Control(int d){
@@ -98,7 +98,8 @@ void Control::SpeedUp(){
 	}
 	if (TIMER != tmp){
 		glutSetWindowTitle(SPEED_UP);
-		state(SPEED_UP);
+		if (TIMER < tmp)
+			state(SPEED_UP);
 		tmp = TIMER;
 	}
 	if (SCORE == 60){
@@ -417,6 +418,17 @@ void Control::OpenHiddenMode(){
 	state(SUPER_MODE);
 }
 
+void Control::AddSpeed(int n){
+	if (TIMER >= 10 && TIMER <= 1000){
+		TIMER -= n;
+	}
+	if (n > 0){
+		state(SPEED_ADD);
+	}
+	else{
+		state(SPEED_SUB);
+	}
+}
 #endif
 
 /*
