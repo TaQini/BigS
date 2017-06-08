@@ -18,28 +18,25 @@ static Food* Beans = 0;
 static Control* CTRL = 0;
 
 void OnTimer(int value){
-	glClearColor(BLACK, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	if(!CTRL->GetPAUSE()){
+	if(!CTRL->GetPAUSE()){ 
 		if(!CTRL->LostLife(*BigS)){
-			if(CTRL->HasFood(*BigS, *Beans)){
+			if(CTRL->HasFood(*BigS, *Beans)){ 
 				Beans->EatenBy(*BigS);
 				CTRL->AddSCORE(*BigS, *Beans);
-				// BigS->Show();
 				Beans->RandomPlace(*BigS);
 			}
 			else
-				CTRL->SnakeMove(*BigS); 
+				CTRL->SnakeMove(*BigS); 	  
 		}
 		else{
 			if(CTRL->GetLIFE() <= 0){
+				// Game over
 				char buf[100];
 				sprintf(buf, GAMEOVER_INFO, CTRL->GetSCORE());
 				glutSetWindowTitle(buf);
 				CTRL->state(buf);  
 				
-				// But you can also play it :)			
+				// super mode 
 				if (!CTRL->GetHiddenMode()){
 					sleep(3);
 					glutSetWindowTitle(BYEBYE);
@@ -49,13 +46,14 @@ void OnTimer(int value){
 				}
 			}
 		}
-	}	
+	}
 
-	if(CTRL->GetSCORE() <= 120){
+	// change speed when score <= 150
+	if(CTRL->GetSCORE() <= 150){
 		CTRL->SpeedUp();
 	}
 
-	glutSwapBuffers();
+	// for each TIMER second, exec this block of code 
 	glutTimerFunc(CTRL->GetTIMER(), OnTimer, 1);
 }
 
@@ -93,11 +91,14 @@ void OnKeyPressed(unsigned char key, int x, int y){
 		case 'o':
 			CTRL->OpenHiddenMode();
 			break;
-		case '+':
-			CTRL->AddSpeed(1);
+		case '+': // speed up
+			CTRL->AddSpeed(25);
 			break;
-		case '-':
-			CTRL->AddSpeed(-1);
+		case '-': // speed down
+			CTRL->AddSpeed(-25);
+			break;
+		case 'c': 
+			BigS->ChangeRole();
 			break;
 		default:
 			break;
@@ -151,26 +152,29 @@ int main(int argc, char ** argv) {
 	CTRL = new Control(DIR_RIGHT);
 	BigS = new Snake(4);
 	Beans = new Food;
-	// BigS->Show();
+	// place a bean at begining
 	Beans->RandomPlace(*BigS);
 
+	// Initilize opengl
 	glutInit(&argc, argv);
-	// glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);
-	glutInitDisplayMode(GLUT_RGBA);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);
 	glutInitWindowSize(960, 1200);
 	glutInitWindowPosition(1000, 1000);
 	glutCreateWindow("TaQini\'s Snake");// Title
+
 	welcome();
-	
+
 	// Draw and Display
 	glutReshapeFunc(Reshape);
 	glutDisplayFunc(Display);
+	
 	glutIdleFunc(Display);
     glutTimerFunc(CTRL->GetTIMER(), OnTimer, 1);	
+	
 	glutKeyboardFunc(OnKeyPressed);
 	glutSpecialFunc(OnDirection);
 
 	glutMainLoop(); // Loop
-
+	
 	return(0);
 }

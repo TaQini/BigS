@@ -6,24 +6,17 @@ private:
 	Node *head; // head_mark of snake head
 	Node *tail; // tail_mark of snake tail
 	int length; // length of snake
+	int role;   // use to change snake's color
 public:
 	Snake(int n); // Initilize Snake
 	void Insert(Node *p); // Insert node after head
 	void Delete(); // delete node before tail
-	void Move(/*Control &C*/);
-	int CheckPos(int x, int y);
+	int CheckPos(int x, int y); // check if (x,y) in snake's body
 	Node* GetHead(){ return head;}
 	Node* GetTail(){ return tail;}
 	int GetLength(){ return length;}
 	void SetLength(int n){ length = n;}
-	// void Show(){
-	// 	Node *p = new(Node); 
-	// 	p = head;
-	// 	while(p){
-	// 		cout << p->GetX() << "," << p->GetY() << endl;
-	// 		p = p->GetFD();
-	// 	} 
-	// }
+	void ChangeRole(){ role = !role;} 
 };
 // CLASS SNAKE
 int Snake::CheckPos(int x, int y){
@@ -36,6 +29,7 @@ int Snake::CheckPos(int x, int y){
 
 Snake::Snake(int n){
 	length = 0;
+	role = time(NULL) & 1;
 	head = new(Node);
 	tail = new(Node);
 	head->SetPosition(MAP_WIDHT/2,MAP_HEIGHT/2);
@@ -68,8 +62,14 @@ void Snake::Insert(Node *p){
     head->SetFD(p);
     p->GetFD()->SetBK(p);
     length += 1;
-    head->GetFD()->SetColor(DARK_GREEN);
-    head->GetFD()->GetFD()->SetColor(GREEN);
+    if(!role){
+	    head->GetFD()->SetColor(DARK_GREEN);
+	    head->GetFD()->GetFD()->SetColor(GREEN);
+	}
+	else{
+		head->GetFD()->SetColor(DARK_PINK);
+	    head->GetFD()->GetFD()->SetColor(PINK);	
+	}
 }
 
 void Snake::Delete(){

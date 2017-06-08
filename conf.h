@@ -20,6 +20,7 @@
 // COLOR
 #define WHITE	1.0f,1.0f,1.0f
 #define BLACK   0.0f,0.0f,0.0f
+#define DARK_GREY	0.2f,0.2f,0.2f
 
 #define YELLOW 	1.0f,1.0f,0.0f
 #define BLUE	0.0f,0.0f,1.0f
@@ -27,8 +28,9 @@
 #define ORANGE	1.0f,0.5f,0.0f
 
 #define GREEN		0.0f,1.0f,0.0f
+#define PINK		1.0f,0.6f,0.6f
 #define DARK_GREEN	0.0f,0.65f,0.0f
-#define DARK_GREY	0.2f,0.2f,0.2f
+#define DARK_PINK	1.0f,0.4f,0.4f
 
 // NUMBER
 #define C00 "   ___  "
@@ -124,3 +126,4 @@
 #define SUPER_MODE		"Spuer MODE opened !!"
 #define SPEED_ADD		"Speed ++"
 #define SPEED_SUB		"Speed --"
+#define CHANGE_CLR 		"Color of BigS will be changed."

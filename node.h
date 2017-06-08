@@ -21,7 +21,7 @@ public:
 	float GetR() { return R;}
 	float GetG() { return G;}
 	float GetB() { return B;}
-	int CmpColor(float r, float g, float b);
+	int CmpColor(float r, float g, float b); // compare 2 color
 };
 
 int RGB::CmpColor(float r, float g, float b){

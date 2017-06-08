@@ -3,52 +3,47 @@
 // CLASS Food
 class Food : public POS, public RGB{
 public:
-	void RandomPlace(Snake &S);
-	Food(){}
-	void EatenBy(Snake &S);
-	int RandInt(int sz);
-	int CheckPos(int x, int y);
+	void RandomPlace(Snake &S); // generate a random bean
+	Food(){} // ctor
+	void EatenBy(Snake &S); // add bean's node to snake 
+	int RandInt(int sz); // generate a random integer
 };
-
-int Food::CheckPos(int x, int y){
-	if(GetX() == x && GetY() == y){
-		return 0;
-	}
-	return 1;
-}
 
 void Food::EatenBy(Snake &S){
 	Node* p = new Node(GetX(),GetY());
-	p->SetColor(GetR(),GetG(),GetB());
-	S.Insert(p);
-	// cout << S.GetLength() << endl;
+	S.Insert(p); 
 }
 
 int Food::RandInt(int sz){
 	char buf[4];
-	int fd = open("/dev/urandom",O_RDONLY,0); 
+	int fd = open("/dev/urandom",O_RDONLY,0); // use urandom file to generate randint
 	read(fd,buf,4);
 	close(fd);
 	return *(unsigned int*)buf % sz;
 }
 
 void Food::RandomPlace(Snake &S){
-    do{
+    do{ // Place a Bean where is not on the body of snake
 		SetPosition( RandInt(MAP_WIDHT),RandInt(MAP_HEIGHT));
     }while (!S.CheckPos(GetX(),GetY()));
     
     int p = RandInt(100);
-    // cout << "random int : " << p << endl;
-    if( p < 12 ){
-    	SetColor(BLUE);
+    // cout << "random int : " << p << endl; // Debug
+    
+    // set color of bean
+    if( p < 12 ){ // 12%
+    	SetColor(BLUE); 
     }
-    else if( p > 25 && p < 30 ){
+    else if( p > 25 && p < 30 ){ // 4%
     	SetColor(RED);
     }
-    else if( p == 66 ){
+    else if( p == 66 ){ // 1%
     	SetColor(ORANGE);
     }
-    else{
+    else if( p > 95){ // 4%
+    	SetColor(WHITE);
+    }
+    else{ // 79%
     	SetColor(YELLOW);
     }
 }

@@ -2,45 +2,59 @@
 #define _Control_H_ 
 class Control{
 private:
-	int DIR;
-	int MOVE;
+	int DIR;         // Direction of user pressed
+	int MOVE;        // Moving direction of snake
 	int TIMER;
-	int PAUSE;
+	int PAUSE;       // Flag of PAUSE
 	int LIFE;
 	int SCORE;
-	int START_TIME;
-	int HIDDEN_MODE;
+	int START_TIME;	
+	int HIDDEN_MODE; // Flag of hidden mode
 public:
 	Control(int d);
+
+	// About Direction
 	int GetDIR(){ return DIR;}
 	int GetMOVE(){ return MOVE;}
-	int GetTIMER(){ return TIMER;}
-	int GetPAUSE(){ return PAUSE;}
+	int MoveX(); // coordinate X
+	int MoveY(); // coordinate Y
 	void ChangeDIR(int d){ DIR = d;}
+
+	// About Speed 
+	int GetTIMER(){ return TIMER;}
+	int GetStartTime(){ return START_TIME;}
+	int GetPAUSE(){ return PAUSE;}
 	void ChangePAUSE();
-	int MoveX();
-	int MoveY();
-	void SnakeEat(Snake &S, Food &F);
-	void SnakeMove(Snake &S);
-	int LostLife(Snake &S);
-	void Reshape(int w, int h);
-	void Display(Snake &S, Food &F);
-	int HasFood(Snake &S, Food &F);
-	void SubLife(int n){ LIFE -= n;}
 	void SpeedUp();
+	void AddSpeed(int n);
+
+	// About Score and Life
 	int GetLIFE(){ return LIFE;}
 	int GetSCORE(){ return SCORE;}
+	int LostLife(Snake &S);
+	void SubLife(int n){ LIFE -= n;}
 	void AddSCORE(Snake &S, Food &F);
-	int GetStartTime(){ return START_TIME;}
-	string Conv(int n, int i);
-	void state(char *msg);
+
+	// About Snake and Food
+	int HasFood(Snake &S, Food &F);
+	void SnakeEat(Snake &S, Food &F); 
+	void SnakeMove(Snake &S);
+
+	// About Draw
+	void Reshape(int w, int h);
+	void Display(Snake &S, Food &F);
+
+	// About Mode
 	void OpenHiddenMode();
 	int GetHiddenMode(){ return HIDDEN_MODE;}
-	void AddSpeed(int n);
+
+	// About Output Information
+	string Conv(int n, int i);
+	void state(char *msg);
 };
 
 Control::Control(int d){
-	ChangeDIR(d); 
+	ChangeDIR(d);
 	TIMER = TIME_BASE;
 	PAUSE = 1;
 	LIFE = INIT_LIFE;
@@ -53,42 +67,28 @@ void Control::SnakeMove(Snake &S){
 	Node *p = new(Node);
 	p->SetPosition(S.GetHead()->GetFD()->GetX(),S.GetHead()->GetFD()->GetY());
 	p->SetPosition(p->GetX()+MoveX(),p->GetY()+MoveY());
-	// Debug
-	// //cout << p->GetX() << "," << p->GetY() << endl;
-	// int i;
-	// cin >> i;
 	S.Insert(p);
 	S.Delete();
-	MOVE = DIR;
-
-	// S.Show();
+	MOVE = DIR; // Change the moving direction
 }
 
 int Control::MoveX(){
-	if(DIR == 0) return -1;
-	else if(DIR == 1) return 1;
+	if(DIR == 0) return -1; // up
+	else if(DIR == 1) return 1; // down
 	else return 0;
 }
 int Control::MoveY(){
-	if(DIR == 2) return -1;
-	else if(DIR == 3) return 1;
+	if(DIR == 2) return -1; // left
+	else if(DIR == 3) return 1; // right
 	else return 0;
 }
 
 int Control::HasFood(Snake &S, Food &F){
-	Node *p = new(Node);
-	p = S.GetHead()->GetFD();
-
-    // //cout << "Dir: " << MoveX() << "," << MoveY() << endl;
-    // //cout << "Next: " << p->GetX()+MoveX() << "," << p->GetY()+MoveY() << endl << endl;
-    // //cout << "Head: " << p->GetX() << "," << p->GetY() << endl;
-    // //cout << "Food: " << F.GetX() << "," << F.GetY() << endl << endl;
-    
+	Node *p = S.GetHead()->GetFD();
     if(p->GetX() + MoveX() == F.GetX()
-        && p->GetY() + MoveY() == F.GetY() ){
+        && p->GetY() + MoveY() == F.GetY()){
         return 1;
     }
-
     return 0;
 }
 void Control::SpeedUp(){
@@ -107,7 +107,6 @@ void Control::SpeedUp(){
 		LIFE += 3;
 		glutSetWindowTitle(SPEED_MAX);
 		state(SPEED_MAX);
-		TIMER = 100;
 	}
 	if (SCORE > 60){
 		TIMER = 100;
@@ -117,7 +116,6 @@ void Control::SpeedUp(){
 		LIFE += 5;
 		glutSetWindowTitle(SPEED_CRAZY);
 		state(SPEED_CRAZY);
-		TIMER = 75;
 	}
 	if (SCORE > 120){
 		TIMER = 75;
@@ -133,7 +131,7 @@ int Control::LostLife(Snake &S){
         	state(CRASH_SELF);
 			glutSetWindowTitle(CRASH_SELF);  
 
-			// Hidden mode
+			// for Hidden mode
         	if (LIFE > 0) return 0; // can pass yourself :)
         	else return 1; // if life <= 0 , can't pass 
 
@@ -156,7 +154,6 @@ int Control::LostLife(Snake &S){
 
 void Control::Reshape(int w, int h) {  
 	if (h == 0) h = 1;
-	// Prevent A Divide By Zero If The Window Is Too Small  
 
 	glViewport(0, 0, w, h); // Reset The Current Viewport And Perspective Transformation  
 
@@ -176,7 +173,7 @@ void Control::Display(Snake &S, Food &F){
 	double unit_x = 2.0f/MAP_WIDHT;
 	double unit_y = 2.0f/MAP_HEIGHT;
 
-	// Food
+	// Draw Food
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);  
 	glBegin(GL_QUADS);
 	glColor3f(F.GetR(), F.GetG(), F.GetB());
@@ -186,9 +183,8 @@ void Control::Display(Snake &S, Food &F){
     glVertex3f((F.GetY()+1) * unit_x, -(F.GetX()+1) * unit_y, 0.0f);
     glVertex3f((F.GetY()  ) * unit_x, -(F.GetX()+1) * unit_y, 0.0f);
 	glEnd();
-	// glutSwapBuffers();
 
-	// Snake
+	// Draw Snake
 	Node* p = S.GetTail()->GetBK();
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	while (p->GetY() != -1){
@@ -264,6 +260,11 @@ void Control::AddSCORE(Snake &S, Food &F){
 		}
 		LIFE += 10;
 		state(RARE_BEAN);
+	}
+	else if(F.CmpColor(WHITE)){
+		SCORE += 1;
+		state(CHANGE_CLR);
+		S.ChangeRole();
 	}
 }
 
@@ -386,9 +387,12 @@ void Control::state(char *msg){
 	int s0 = SCORE / 100 % 10;
 	int s1 = SCORE / 10 % 10;
 	int s2 = SCORE / 1 % 10;
+
+	// Show the ASCII score and life
 	for(int i=0;i<6;i++){
 		cout << " |" + Conv(l0,i) + Conv(l1,i) + Conv(l2,i) + " | " + Conv(s0,i) + Conv(s1,i) + Conv(s2,i) + " | " << endl;
 	}
+
 	cout << " |                         |                          |" << endl;
 	cout << " +----------------------------------------------------+" << endl;
 	
@@ -397,7 +401,7 @@ void Control::state(char *msg){
 		if (tmp.size() & 1) tmp = " " + tmp;
 		else tmp = tmp + " ";
 	}
-	// Middle 
+	// set string to the centre 
 
 	cout << " |                                                    |" << endl;
 	cout << " |"                    <<  tmp  <<                   "|"<< endl;
@@ -419,6 +423,7 @@ void Control::OpenHiddenMode(){
 }
 
 void Control::AddSpeed(int n){
+	// change speed manually
 	if (TIMER >= 10 && TIMER <= 1000){
 		TIMER -= n;
 	}
@@ -430,19 +435,3 @@ void Control::AddSpeed(int n){
 	}
 }
 #endif
-
-/*
-+---------------------+----------------------+
-|                     |                      |
-|        Life         |        Score         |
-|                     |                      |
-+--------------------------------------------+
-|   ___   __   ___    |    ___   __   ___    |
-|  / _ \ /_ | |__ \   |   / _ \ /_ | |__ \   |
-| | | | | | |    ) |  |  | | | | | |    ) |  |
-| | | | | | |   / /   |  | | | | | |   / /   |
-| | |_| | | |  / /_   |  | |_| | | |  / /_   |
-|  \___/  |_| |____|  |   \___/  |_| |____|  |
-|                     |                      |
-+---------------------+----------------------+
- */
