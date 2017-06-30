@@ -23,6 +23,8 @@ A sample *snake eat bean* game write in c++ &amp; openGL
  ![STRAT](./snake_ver2_start.png)
 ### Playing
  ![INGAME](./snake_ver2_game.png)
+## More
+ > See the demo.mkv
 
 TaQini
 2017.6.8
