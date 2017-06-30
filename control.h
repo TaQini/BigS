@@ -137,7 +137,7 @@ int Control::LostLife(Snake &S){
 
 		}
 		else if( S.GetHead()->GetFD()->GetX() + MoveX() == -1 || S.GetHead()->GetFD()->GetY() + MoveY() == -1 
-			|| S.GetHead()->GetFD()->GetX() + MoveX() == MAP_WIDHT || S.GetHead()->GetFD()->GetY() + MoveY() == MAP_HEIGHT){
+			|| S.GetHead()->GetFD()->GetX() + MoveX() == MAP_WIDTH || S.GetHead()->GetFD()->GetY() + MoveY() == MAP_HEIGHT){
 			SubLife(1);
         	state(CRASH_WALL); 
 			glutSetWindowTitle(CRASH_WALL);  
@@ -170,7 +170,7 @@ void Control::Display(Snake &S, Food &F){
 	glLoadIdentity(); // Reset The View
 	glTranslatef(-1.0f, 1.0f, 0.0f);
 
-	double unit_x = 2.0f/MAP_WIDHT;
+	double unit_x = 2.0f/MAP_WIDTH;
 	double unit_y = 2.0f/MAP_HEIGHT;
 
 	// Draw Food
@@ -189,6 +189,7 @@ void Control::Display(Snake &S, Food &F){
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	while (p->GetY() != -1){
 		glBegin(GL_QUADS);
+		//use glvertex*
 		glColor3f(p->GetR(), p->GetG(), p->GetB());
         glVertex3f((p->GetY()  ) * unit_x, -(p->GetX()  ) * unit_y, 0.0f);  
         glVertex3f((p->GetY()+1) * unit_x, -(p->GetX()  ) * unit_y, 0.0f);  
@@ -227,6 +228,7 @@ void Control::AddSCORE(Snake &S, Food &F){
 		}
 	}
 	else if(F.CmpColor(RED)){
+		// Different function of a bean
 		S.Delete();
 		int p = F.RandInt(100);
 		if( p < 30){

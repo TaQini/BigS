@@ -32,7 +32,7 @@ Snake::Snake(int n){
 	role = time(NULL) & 1;
 	head = new(Node);
 	tail = new(Node);
-	head->SetPosition(MAP_WIDHT/2,MAP_HEIGHT/2);
+	head->SetPosition(MAP_WIDTH/2,MAP_HEIGHT/2);
 	head->SetFD(tail);
 	head->SetBK(NULL);
 	tail->SetFD(NULL);

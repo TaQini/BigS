@@ -24,7 +24,7 @@ int Food::RandInt(int sz){
 
 void Food::RandomPlace(Snake &S){
     do{ // Place a Bean where is not on the body of snake
-		SetPosition( RandInt(MAP_WIDHT),RandInt(MAP_HEIGHT));
+		SetPosition( RandInt(MAP_WIDTH),RandInt(MAP_HEIGHT));
     }while (!S.CheckPos(GetX(),GetY()));
     
     int p = RandInt(100);

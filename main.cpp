@@ -1,3 +1,4 @@
+
 #include <iostream>
 using namespace std;
 #include <GL/glut.h>
@@ -158,7 +159,7 @@ int main(int argc, char ** argv) {
 	// Initilize opengl
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);
-	glutInitWindowSize(960, 1200);
+	glutInitWindowSize(950, 1100);
 	glutInitWindowPosition(1000, 1000);
 	glutCreateWindow("TaQini\'s Snake");// Title
 

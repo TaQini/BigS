@@ -1,10 +1,10 @@
 // GAME
 #define KEY_ESCAPE	0x1B
 #define KEY_SPACE	0x20
-#define MAP_WIDHT  	24
-#define MAP_HEIGHT 	24
+#define MAP_WIDTH	24
+#define MAP_HEIGHT	24
 
-#define INIT_LENGTH 4
+#define INIT_LENGTH	4
 #define INIT_LIFE	5
 
 #define TIME_BASE   300
@@ -18,19 +18,19 @@
 #define DIR_RIGHT      3  
 
 // COLOR
-#define WHITE	1.0f,1.0f,1.0f
-#define BLACK   0.0f,0.0f,0.0f
+#define WHITE		1.0f,1.0f,1.0f
+#define BLACK		0.0f,0.0f,0.0f
 #define DARK_GREY	0.2f,0.2f,0.2f
 
-#define YELLOW 	1.0f,1.0f,0.0f
-#define BLUE	0.0f,0.0f,1.0f
-#define RED		1.0f,0.0f,0.0f
-#define ORANGE	1.0f,0.5f,0.0f
+#define YELLOW 		1.0f,1.0f,0.0f
+#define BLUE 		0.0f,0.0f,1.0f
+#define RED			1.0f,0.0f,0.0f
+#define ORANGE 		1.0f,0.5f,0.0f
 
-#define GREEN		0.0f,1.0f,0.0f
-#define PINK		1.0f,0.6f,0.6f
-#define DARK_GREEN	0.0f,0.65f,0.0f
-#define DARK_PINK	1.0f,0.4f,0.4f
+#define GREEN 		0.0f,1.0f,0.0f
+#define PINK 		1.0f,0.6f,0.6f
+#define DARK_GREEN 	0.0f,0.65f,0.0f
+#define DARK_PINK 	1.0f,0.4f,0.4f
 
 // NUMBER
 #define C00 "   ___  "
